@@ -120,10 +120,8 @@ app.use(async (req, res, next) => {
     try {
       const officeController = getOfficeController();
       await officeController.initTables();
-
       const teamController = getTeamController();
       await teamController.initTables();
-
       const authController = getAuthController();
       await authController.initTables();
 
@@ -215,12 +213,15 @@ app.get("/test-db", async (req, res) => {
   }
 });
 
-// ✅ ✅ ✅ Add this — root route for Vercel / health check
+// ——— HERE: root route for health check — guaranteed before notFound
 app.get("/", (req, res) => {
   res.json({ success: true, message: "Backend is live on Vercel!" });
 });
 
+// 404 / Not Found capture
 app.use(notFound);
+
+// Error handling middleware
 app.use(errorHandler);
 
 if (process.env.NODE_ENV !== "production") {
